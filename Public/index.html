@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Byfron</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0; /* Optional: Set a background color */
+        }
+
+        img {
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .centered-text {
+            text-align: center;
+            color: #ffffff; /* Optional: Set text color */
+            font-size: 120px; /* Optional: Adjust font size */
+            font-family: 'Verdana', sans-serif;
+            background-color: rgba(0, 0, 0, 0); /* Optional: Add a semi-transparent background */
+            padding: 20px; /* Optional: Add padding to the text */
+            position: absolute;
+            z-index: 1; /* Ensure the text is on top of the image */
+        }
+    </style>
+</head>
+<body>
+    <img src="cat2.jpg" alt="A cute cat">
+    <div class="centered-text">
+        <p>Byfron™</p>
+    </div>
+</body>
+</html>
