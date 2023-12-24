@@ -1,20 +1,28 @@
+const socket = io();
+
+socket.on('message', (message) => {
+  displayMessage(message);
+});
+
 function postMessage() {
-    var message = document.getElementById("messageInput").value;
+  var message = document.getElementById('messageInput').value;
 
-    if (message.trim() !== "") {
-        var messagesContainer = document.getElementById("messages");
-        var messageElement = document.createElement("div");
-        messageElement.className = "message";
-        messageElement.textContent = message;
+  if (message.trim() !== '') {
+    // Send the message to the server
+    socket.emit('message', message);
 
-        messagesContainer.appendChild(messageElement);
+    // Clear the input field
+    document.getElementById('messageInput').value = '';
+  } else {
+    alert('Please enter a message before posting.');
+  }
+}
 
-        // You can perform further actions like sending the message to a server or storing it locally.
-        console.log("Posted message:", message);
+function displayMessage(message) {
+  var messagesContainer = document.getElementById('messages');
+  var messageElement = document.createElement('div');
+  messageElement.className = 'message';
+  messageElement.textContent = message;
 
-        // Clear the input field
-        document.getElementById("messageInput").value = "";
-    } else {
-        alert("Please enter a message before posting.");
-    }
+  messagesContainer.appendChild(messageElement);
 }
