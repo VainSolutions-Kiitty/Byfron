@@ -19,6 +19,22 @@ local Uberhook = {
 
 require("zxcmodule")
 
+local notifications = {}
+
+-- in seconds btw
+local defaultNotificationDuration = 5
+
+
+local function createNotification(text, duration, slideSpeed)
+    local notification = {}
+    notification.text = text
+    notification.startTime = CurTime()
+    notification.duration = duration or defaultNotificationDuration
+    notification.slideSpeed = slideSpeed or 200 -- Default slide speed
+    notification.slidePosition = -200 -- Start off-screen
+    table.insert(notifications, notification)
+end
+
 local screengrabbed = false
 
 local localplayer = LocalPlayer()
@@ -2354,6 +2370,72 @@ do -- screengrab notif
     hook.Add("DrawOverlay", "shownotif", shownotif)
 end
 
+do-- noti
+    -- Notification library for Garry's Mod using surface text with slide-in and slide-out animations and a timer bar
+
+    -- Define the notification table
+
+    -- Function to draw notifications
+    local function drawNotifications()
+        local y = 10
+        for i, notification in ipairs(notifications) do
+            local timeElapsed = CurTime() - notification.startTime
+            local slideDistance = 200 -- Distance to slide in
+
+            -- Slide in animation
+            if timeElapsed < 1 then
+                notification.slidePosition = -slideDistance + slideDistance * timeElapsed * notification.slideSpeed
+            end
+
+            -- Slide out animation
+            if timeElapsed > notification.duration - 1 then
+                local slideOutTime = timeElapsed - (notification.duration - 1)
+                notification.slidePosition = -slideDistance * slideOutTime * notification.slideSpeed
+            end
+
+            surface.SetFont("DermaDefault")
+            local textWidth, textHeight = surface.GetTextSize(notification.text)
+            
+            -- Draw the notification background
+            surface.SetDrawColor(0, 0, 0, 200)
+            surface.DrawRect(10 + notification.slidePosition, y, textWidth + 20, textHeight + 10)
+
+            -- Draw the notification text
+            draw.SimpleText(notification.text, "DermaDefault", 20 + notification.slidePosition, y + 5, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+
+            -- Calculate the time left for the notification
+            local timeLeft = notification.duration - timeElapsed
+            local progress = 1 - math.min(timeElapsed / notification.duration, 1)
+            local barWidth = (textWidth + 20 - 10 * 2) * progress -- Adjusted width to match the notification width
+            local barHeight = 1 -- Adjusted thickness to 1 pixel
+            local barX = 10 + notification.slidePosition + 5 -- 5 pixels away from the left edge
+            local barY = y + textHeight + 5 -- 5 pixels away from the bottom edge
+
+            -- Draw the timer bar
+            if timeLeft > 0 then
+                surface.SetDrawColor(255, 0, 0, 200)
+                surface.DrawRect(barX, barY, barWidth, barHeight)
+            end
+
+            -- Remove the notification if it's done
+            if timeLeft <= 0 then
+                table.remove(notifications, i)
+            end
+
+            y = y + textHeight + 20
+        end
+    end
+
+    -- Hook to draw notifications
+    hook.Add("DrawOverlay", "DrawNotifications", drawNotifications)
+
+    -- Example usage:
+    -- Create a notification with custom duration (in seconds) and slide speed
+    createNotification("This is a notification btw", 7, 100) -- 7 seconds duration, 100 slide speed
+
+    -- Call createNotification() whenever you want to display a new notification.
+
+end
 
 -- recharge()
 -- timer.Simple(2,shift())
@@ -2480,5 +2562,5 @@ do --SECTION -  | Ui Stuffs | Section
 
     
     end --!SECTION
-
+    createNotification("I think the notification is working" , 5 , 100)
 end --!SECTION
