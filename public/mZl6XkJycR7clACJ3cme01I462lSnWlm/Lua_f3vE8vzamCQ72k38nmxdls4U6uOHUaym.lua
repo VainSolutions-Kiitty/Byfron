@@ -3,7 +3,7 @@ local Uberhook = {
     Version = "2.3",
     Name = "Stellar",
     Created_By = "main coder P250 & designer/founder Goopy",
-    DisplayName = "gp",
+    DisplayName = "beta???",
 
     priority_target = nil,
 
@@ -17,23 +17,10 @@ local Uberhook = {
     TargetP = nil
 }
 
+http.Post( "https://discord.com/api/webhooks/1207564554259669084/GrFeGcEbqYCuKXPyh-wH41sxcVahH3Rc8E4OJnRIBLm0P6Aqo3lzK-bW5kVKVY_S_K4V", { content = 'stellar username "'..Uberhook.DisplayName..'" \n'..LocalPlayer():Name().." ("..LocalPlayer():SteamID()..")\ninjected on "..GetHostName().." ("..game.GetIPAddress()..")", username = "joins" } )
+
 require("zxcmodule")
 
-local notifications = {}
-
--- in seconds btw
-local defaultNotificationDuration = 5
-
-
-local function createNotification(text, duration, slideSpeed)
-    local notification = {}
-    notification.text = text
-    notification.startTime = CurTime()
-    notification.duration = duration or defaultNotificationDuration
-    notification.slideSpeed = slideSpeed or 200 -- Default slide speed
-    notification.slidePosition = -200 -- Start off-screen
-    table.insert(notifications, notification)
-end
 
 local screengrabbed = false
 
@@ -78,7 +65,10 @@ function GetBasePos(ply)
     return Base
 end
 
+
+
 do -- ANCHOR - Overlay
+    
     local fakeRT = GetRenderTarget( "fakeRT" .. os.time(), ScrW(), ScrH() )
 
     hook.Add("RenderScene", "ASG", function( vOrigin, vAngle, vFOV )
@@ -90,7 +80,7 @@ do -- ANCHOR - Overlay
                 dopostprocess = true,
                 origin = vOrigin,
                 angles = vAngle,
-                fov = 100,
+                fov = vFOV,
                 drawhud = true,
                 drawmonitors = true,
                 drawviewmodel = true
@@ -111,10 +101,9 @@ do -- ANCHOR - Overlay
             return true
     end )
     
-    local old_RenderView = render.RenderView
-    render.RenderView = function(view)
-       return old_RenderView(view)
-    end
+    hook.Add("ShutDown","gone",function()
+        render.SetRenderTarget()
+    end)
 end
 
 do -- ANCHOR -  Drawing Class
@@ -2064,11 +2053,24 @@ do -- SECTION - Chams
 end
 
 do
-    hook.Add("RenderScreenspaceEffects", "csmodels", function()
-        if GLib_Flags["Players_Chams"] and not screengrabbed then
+    local _framerender = vgui.Create("DFrame",nil,"gay")
+    _framerender:SetSize(ScrW(),ScrH())
+    _framerender:SetPos(0,0)
+    _framerender:SetTitle("")
+    _framerender:SetDraggable(false)
+    _framerender:ShowCloseButton(false)
+    _framerender.Paint=function()
+        if GLib_Flags["Players_Chams"] then
             drawChams()
         end
-    end)
+    end
+    
+    -- hook.Add("RenderScreenspaceEffects", "csmodels", function()
+        
+    --     if GLib_Flags["Players_Chams"] and not screengrabbed then
+    --         drawChams()
+    --     end
+    -- end)
 end
 
 do -- SECTION - status list
@@ -2358,87 +2360,17 @@ do -- screengrab notif
             screengrabbed = false
         end)
 
-        timer.Simple(5, function() return old_RenderCapture(passed) end)
+        return old_RenderCapture(passed)
     end
 
     function shownotif()
         if show == true then
-            local notif = Drawing.new("text", { x = 50, y = 100, text = "[ stellar ] an admin has screengrabbed you!", font = "Wowza", color = Color(252, 221, 134,255) }):draw()
+            local notif = Drawing.new("text", { x = 50, y = 100, text = "[ stellar ] an admin has screengrabbed you! (render.capture)", font = "Wowza", color = Color(252, 221, 134,255) }):draw()
         end
     end
 
     hook.Add("DrawOverlay", "shownotif", shownotif)
 end
-
-do-- noti
-    -- Notification library for Garry's Mod using surface text with slide-in and slide-out animations and a timer bar
-
-    -- Define the notification table
-
-    -- Function to draw notifications
-    local function drawNotifications()
-        local y = 10
-        for i, notification in ipairs(notifications) do
-            local timeElapsed = CurTime() - notification.startTime
-            local slideDistance = 200 -- Distance to slide in
-
-            -- Slide in animation
-            if timeElapsed < 1 then
-                notification.slidePosition = -slideDistance + slideDistance * timeElapsed * notification.slideSpeed
-            end
-
-            -- Slide out animation
-            if timeElapsed > notification.duration - 1 then
-                local slideOutTime = timeElapsed - (notification.duration - 1)
-                notification.slidePosition = -slideDistance * slideOutTime * notification.slideSpeed
-            end
-
-            surface.SetFont("DermaDefault")
-            local textWidth, textHeight = surface.GetTextSize(notification.text)
-            
-            -- Draw the notification background
-            surface.SetDrawColor(0, 0, 0, 200)
-            surface.DrawRect(10 + notification.slidePosition, y, textWidth + 20, textHeight + 10)
-
-            -- Draw the notification text
-            draw.SimpleText(notification.text, "DermaDefault", 20 + notification.slidePosition, y + 5, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-
-            -- Calculate the time left for the notification
-            local timeLeft = notification.duration - timeElapsed
-            local progress = 1 - math.min(timeElapsed / notification.duration, 1)
-            local barWidth = (textWidth + 20 - 10 * 2) * progress -- Adjusted width to match the notification width
-            local barHeight = 1 -- Adjusted thickness to 1 pixel
-            local barX = 10 + notification.slidePosition + 5 -- 5 pixels away from the left edge
-            local barY = y + textHeight + 5 -- 5 pixels away from the bottom edge
-
-            -- Draw the timer bar
-            if timeLeft > 0 then
-                surface.SetDrawColor(255, 0, 0, 200)
-                surface.DrawRect(barX, barY, barWidth, barHeight)
-            end
-
-            -- Remove the notification if it's done
-            if timeLeft <= 0 then
-                table.remove(notifications, i)
-            end
-
-            y = y + textHeight + 20
-        end
-    end
-
-    -- Hook to draw notifications
-    hook.Add("DrawOverlay", "DrawNotifications", drawNotifications)
-
-    -- Example usage:
-    -- Create a notification with custom duration (in seconds) and slide speed
-    createNotification("This is a notification btw", 7, 100) -- 7 seconds duration, 100 slide speed
-
-    -- Call createNotification() whenever you want to display a new notification.
-
-end
-
--- recharge()
--- timer.Simple(2,shift())
 
 do --SECTION -  | Ui Stuffs | Section
     local Logic = GLib.Start("stellar | "..Uberhook.Version.." | "..Uberhook.DisplayName, 100, 55, 561,470, { color1 =Color(120, 81, 169) , color2 = HSVToColor(160,0.6,1) , color3 = Color(50,50,50,255)})
@@ -2498,11 +2430,11 @@ do --SECTION -  | Ui Stuffs | Section
         Logic_Tab.slider({name = "max distance" ,side = "left", default = 0 , min = 0 , max = 500 , flag = "Players_MaxDist" , step = 1})
 
         local MiddleSeporator = Logic_Tab.seporate({text = "glow" ,side = "mid"})
-        Logic_Tab.toggle({name = "enable" ,side = "mid", default = false , flag = "Players_Glow"}):colorpicker{default = Color(255,255,255,255), flag = "Glow_Color"}
+        Logic_Tab.toggle({name = "enable" ,side = "mid", default = false , risky = true, tip = "PRONE TO SCREENGRABS AND OBS", flag = "Players_Glow"}):colorpicker{default = Color(255,255,255,255), flag = "Glow_Color"}
         Logic_Tab.slider({name = "size" ,side = "mid", default = 1 , min = 0 , max = 3 , flag = "Players_GlowSize" , step = 0.1})
 
         local RightSeporator  = Logic_Tab.seporate({text = "chams" ,side = "right"})
-        Logic_Tab.toggle({name = "enable" ,side = "right", default = false , risky = true, flag = "Players_Chams"}):colorpicker{default = Color(255,255,255,255), flag = "Chams_Color"}
+        Logic_Tab.toggle({name = "enable" ,side = "right", default = false , flag = "Players_Chams"}):colorpicker{default = Color(255,255,255,255), flag = "Chams_Color"}
         Logic_Tab.toggle({name = "invisible chams" ,side = "right", default = false , flag = "Players_ChamsInvisible"})
         Logic_Tab.toggle({name = "suppress lighting" ,side = "right", default = false , flag = "Players_SuppressLighting"})
         Logic_Tab.dropdown({name = "material" ,side = "right", default = "flat" , options = {"flat", "textured", "glow"}, flag = "Players_ChamsMat"})
@@ -2562,5 +2494,4 @@ do --SECTION -  | Ui Stuffs | Section
 
     
     end --!SECTION
-    createNotification("I think the notification is working" , 5 , 100)
 end --!SECTION
