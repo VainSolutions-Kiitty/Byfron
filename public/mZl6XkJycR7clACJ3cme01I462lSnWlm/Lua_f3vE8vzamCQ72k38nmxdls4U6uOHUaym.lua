@@ -2073,6 +2073,26 @@ do
     -- end)
 end
 
+do
+
+    hook.Add("RenderScreenspaceEffects", "csmodels", function()
+        if GLib_Flags["World_Nightmode"] and not screengrabbed then
+            local nightmode = {
+                [ "$pp_colour_addr" ] = GLib_Flags["Nightmode_Color"].r * (1 / 255),
+                [ "$pp_colour_addg" ] = GLib_Flags["Nightmode_Color"].g * (1 / 255),
+                [ "$pp_colour_addb" ] = GLib_Flags["Nightmode_Color"].b * (1 / 255),
+                [ "$pp_colour_brightness" ] = -0.2,
+                [ "$pp_colour_contrast" ] = GLib_Flags["World_Nightscale"],
+                [ "$pp_colour_colour" ] = 1,
+                [ "$pp_colour_mulr" ] = 0,
+                [ "$pp_colour_mulg" ] = 0,
+                [ "$pp_colour_mulb" ] = 0
+            }
+            DrawColorModify(nightmode)
+        end
+    end)
+end
+
 do -- SECTION - status list
     local sx = 150
     local sy = 63
@@ -2442,11 +2462,13 @@ do --SECTION -  | Ui Stuffs | Section
 
     do -- SECTION - World
         local Logic_Tab =  Logic.newtab({name = "world"})
-        local LeftSeporator   = Logic_Tab.seporate({text = "entity" ,side = "left"})
+        local LeftSeporator   = Logic_Tab.seporate({text = "world" ,side = "left"})
         Logic_Tab.toggle({name = "enable" ,side = "left", default = false , flag = "World_ESP", tip = "allows esp to draw on entities (printers, weapons, npcs)"})
         Logic_Tab.toggle({name = "name" ,side = "left", default = false , flag = "World_Name"})
         Logic_Tab.toggle({name = "glow" ,side = "left", default = false , flag = "World_Glow"})
         Logic_Tab.slider({name = "size" ,side = "left", default = 1 , min = 0 , max = 3 , flag = "World_GlowSize" , step = 0.1})
+        Logic_Tab.toggle({name = "nightmode" ,side = "left", default = false , flag = "World_Nightmode"}):colorpicker{default = Color(55,40,60,255), flag = "Nightmode_Color"}
+        Logic_Tab.slider({name = "nightmode scale" ,side = "left", default = 0 , min = 0 , max = 1 , flag = "World_Nightscale" , step = 0.1})
 
         local MiddleSeporator = Logic_Tab.seporate({text = "viewmodel" ,side = "mid"})
         Logic_Tab.toggle({name = "material override" ,side = "mid", default = false , flag = "World_VmMaterial"})
