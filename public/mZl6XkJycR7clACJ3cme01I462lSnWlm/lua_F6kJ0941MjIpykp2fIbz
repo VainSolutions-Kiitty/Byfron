@@ -45,6 +45,6 @@ run_on_actor(fallenguard, run);
 warn("loaded")
 
 wait(1)
-
+script_key = _G.scriptkey
 loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/3c7f0b8e4882c14868874b72c70e8340.lua"))()
 
