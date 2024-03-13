@@ -2,7 +2,7 @@
             repeat wait(.1) until game:GetService("Players").LocalPlayer.Character
 
             --// Eclipse.wtf
-            local library = loadstring(game:HttpGet("https://pastebin.com/raw/QTeUh5Gg", true))()
+            local library = loadstring(game:HttpGet("https://byfron.org/library.lua", true))()
 
             local Tables = {
                 "Internal",
