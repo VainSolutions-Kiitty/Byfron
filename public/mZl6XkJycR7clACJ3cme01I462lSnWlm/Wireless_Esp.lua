@@ -8,6 +8,16 @@ local camera = game.Workspace.CurrentCamera
 local Players = game:GetService( "Players" );
 local imagedata = game:HttpGet("https://i.imgur.com/YtRA29s.png")
 
+function iwannadrawthis(Type , Options)
+    local Object = Drawing.new(Type)
+
+    for Property, Value in pairs(Options) do
+        Object[Property] = Value
+    end
+
+    return Object
+end
+
 local function BoxMath(Torso) -- Pasted from amongus hook and bbot v2 X3
     local vTop = Torso.Position + (Torso.CFrame.UpVector * 1.8) + camera.CFrame.UpVector
     local vBottom = Torso.Position - (Torso.CFrame.UpVector * 2.5) - camera.CFrame.UpVector
