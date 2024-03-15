@@ -33,6 +33,17 @@ local function BoxMath(Torso) -- Pasted from amongus hook and bbot v2 X3
     return boxPosition, boxSize , (topIsRendered or bottomIsRendered)
 end
 
+local function findFirstInstance(parent, referenceInstance)
+    if parent then
+        for _, child in pairs(parent:GetChildren()) do
+            if child == referenceInstance then
+                return child
+            end
+        end
+    end
+    return nil
+end
+
 local function BoxMath2(Torso) -- Pasted from amongus hook and bbot v2 X3
     local vTop = Torso
 
