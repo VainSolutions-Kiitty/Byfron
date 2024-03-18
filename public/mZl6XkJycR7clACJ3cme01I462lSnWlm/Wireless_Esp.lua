@@ -78,6 +78,7 @@ function esp_library.returndraw( )
         WeaponText =  iwannadrawthis("Text" , {Size = 16, Font = 1 ,  Outline = true , Center = true , Color = Color3.new(1,1,1) });
         HealthText =  iwannadrawthis("Text" , {Size = 16, Font = 1 ,  Outline = true , Center = true , Color = Color3.new(1,1,1) });
         NameText =  iwannadrawthis("Text" , {Size = 16, Font = 1 , Outline = true , Center = true , Color = Color3.new(1,1,1) });
+        wirelessuser =  iwannadrawthis("Text" , {Size = 16, Font = 1 , Outline = true , Center = true , Color = Color3.fromRGB(93, 226, 231) });
         DistanceText = iwannadrawthis("Text" , {Size = 16, Font = 1 , Outline = true , Center = false , Color = Color3.new(1,1,1) });
         LookVector = iwannadrawthis("Line" , {Color = Color3.new(1,1,1) , Thickness = 1});
         -- skeleton shit
@@ -248,7 +249,7 @@ function esp_library.start(  )
             _RENDERED = _RENDERED and HP.Health > 0 and library.flags["visual_main_enabled"]
 
             local istarget = (target.aimbot == player and Color3.new(1,0,0)) or (target.silent == player and Color3.new(1,0,0)) or Color3.new(1,1,1)
-
+            local isOnWireless = table.find(usertable, player.Name)
             
             do -- box
                 cache.Box.Size = _SIZE
@@ -291,6 +292,11 @@ function esp_library.start(  )
                 local _CUSTOMPOS = Vector2.new(_SIZE.X / 2 + _POS.X, (_POS.Y + _SIZE.Y) + 3)
                 local Distance = (_3DPOS - workspace.CurrentCamera.CFrame.p).magnitude
 
+                    
+                cache.wirelessuser.Position = _NAMEPOS - Vector2.new(0,10)
+                cache.wirelessuser.Text = "wireless"
+                cache.wirelessuser.Visible = _RENDERED and isOnWireless and library.flags["visual_main_drawname"]
+                    
                 cache.NameText.Position = _NAMEPOS
                 cache.NameText.Text = player.Name
                 cache.NameText.Visible = _RENDERED and library.flags["visual_main_drawname"]
