@@ -5,13 +5,15 @@ local websockets = getgenv().websocket
 local usertable = {}
 
 if websockets then
-    websockets.OnMessage:Connect(function(message)
+    local socket = WebSocket.connect(websockets)
+    
+    socket.OnMessage:Connect(function(message)
     	table.insert(usertable , message)
     end)
 
     spawn(function() 
         while wait(2) do    
-             websockets:Send(game.Players.LocalPlayer.Name)  
+             socket:Send(game.Players.LocalPlayer.Name)  
         end
     end)
 end
