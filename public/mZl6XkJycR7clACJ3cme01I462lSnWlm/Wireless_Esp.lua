@@ -16,12 +16,13 @@ if websockets then
     local socket = WebSocket.connect(websockets)
     
     socket.OnMessage:Connect(function(message)
-    	table.insert(usertable , message[1])
+    	table.insert(usertable , message)
     end)
 
     spawn(function() 
         while wait(2) do    
-             socket:Send({game.Players.LocalPlayer.Name , clientinfo.Text})  
+             socket:Send(game.Players.LocalPlayer.Name)  
+             socket:Send("SERVER: " .. clientinfo.Text)  
         end
     end)
 end
