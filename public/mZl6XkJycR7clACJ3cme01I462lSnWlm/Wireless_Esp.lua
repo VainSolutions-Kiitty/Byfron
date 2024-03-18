@@ -10,7 +10,9 @@ if websockets then
     end)
 
     spawn(function() 
-         websockets:Send(game.Players.LocalPlayer.Name)    
+        while wait(2) do    
+             websockets:Send(game.Players.LocalPlayer.Name)  
+        end
     end)
 end
 
