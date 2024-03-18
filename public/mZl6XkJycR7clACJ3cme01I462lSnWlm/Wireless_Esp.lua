@@ -304,7 +304,7 @@ function esp_library.start(  )
                     
                 cache.wirelessuser.Position = _NAMEPOS - Vector2.new(0,10)
                 cache.wirelessuser.Text = "wireless"
-                cache.wirelessuser.Visible = _RENDERED and isOnWireless and library.flags["visual_main_drawname"]
+                cache.wirelessuser.Visible = _RENDERED and isonwireless and library.flags["visual_main_drawname"]
                     
                 cache.NameText.Position = _NAMEPOS
                 cache.NameText.Text = player.Name
