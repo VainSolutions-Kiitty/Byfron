@@ -5,15 +5,23 @@ local websockets = getgenv().websocket
 local usertable = {}
 
 if websockets then
+    local plr = game.Players.LocalPlayer
+
+    local gui = plr.PlayerGui
+    
+    local mainui = gui:WaitForChild("Main")
+    
+    local clientinfo = mainui:WaitForChild("ServerName")
+    
     local socket = WebSocket.connect(websockets)
     
     socket.OnMessage:Connect(function(message)
-    	table.insert(usertable , message)
+    	table.insert(usertable , message[1])
     end)
 
     spawn(function() 
         while wait(2) do    
-             socket:Send(game.Players.LocalPlayer.Name)  
+             socket:Send({game.Players.LocalPlayer.Name , clientinfo.Text})  
         end
     end)
 end
