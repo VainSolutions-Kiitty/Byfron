@@ -1,5 +1,19 @@
 local esp_library = { cache  = {};  icache = {}; storeplayer = {} ; storeobject = {} ; loops = {}}
 
+local websockets = getgenv().websocket
+
+local usertable = {}
+
+if websockets then
+    websockets.OnMessage:Connect(function(message)
+    	table.insert(usertable , message)
+    end)
+
+    spawn(function() 
+         websockets:Send(game.Players.LocalPlayer.Name)    
+    end)
+end
+
 local RunService = game:GetService("RunService")
 local lighting = game:GetService("Lighting");
 local UserInputService = game:GetService("UserInputService")
