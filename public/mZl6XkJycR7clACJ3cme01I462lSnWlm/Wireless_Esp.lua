@@ -253,7 +253,12 @@ function esp_library.start(  )
             _RENDERED = _RENDERED and HP.Health > 0 and library.flags["visual_main_enabled"]
 
             local istarget = (target.aimbot == player and Color3.new(1,0,0)) or (target.silent == player and Color3.new(1,0,0)) or Color3.new(1,1,1)
-            local isOnWireless = table.find(usertable, player.Name)
+            local isonwireless = false
+            if table.find(usertable, player.Name) then
+                isonwireless = true
+                else
+                isonwireless = false
+            end
             
             do -- box
                 cache.Box.Size = _SIZE
