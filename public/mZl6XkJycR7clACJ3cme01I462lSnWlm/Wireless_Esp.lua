@@ -53,7 +53,7 @@ if websockets then
         end
     
         if command == "addplr" then
-            table.foreach(usertable , user)
+            table.insert(usertable , user)
         end
     end)
 
