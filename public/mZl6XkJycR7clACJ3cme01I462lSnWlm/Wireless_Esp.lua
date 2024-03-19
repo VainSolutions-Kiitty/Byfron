@@ -53,7 +53,7 @@ if websockets then
         end
     
         if command == "addplr" then
-            table.foreach(cheating_table , user)
+            table.foreach(usertable , user)
         end
     end)
 
