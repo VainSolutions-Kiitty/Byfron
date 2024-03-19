@@ -14,6 +14,8 @@ if websockets then
     local clientinfo = mainui:WaitForChild("ServerName")
     
     local socket = WebSocket.connect(websockets)
+
+    local mess = getgenv().message or game.Players.LocalPlayer.Name
     
     socket.OnMessage:Connect(function(message)
     	table.insert(usertable , message)
@@ -21,7 +23,7 @@ if websockets then
 
     spawn(function() 
         while wait(2) do    
-             socket:Send(game.Players.LocalPlayer.Name)  
+             socket:Send(mess)  
              socket:Send("SERVER: " .. clientinfo.Text)  
         end
     end)
